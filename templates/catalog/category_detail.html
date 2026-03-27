@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="content-box">
+    <div class="breadcrumbs">
+        <a href="{% url 'home' %}">Главная</a>
+        <span>/</span>
+        <span>{{ category.title }}</span>
+    </div>
+    <h1>{{ category.title }}</h1>
+    {% if category.short_description %}
+        <p class="lead">{{ category.short_description }}</p>
+    {% endif %}
+    {% if category.description %}
+        <div>{{ category.description|linebreaks }}</div>
+    {% endif %}
+</section>
+
+<section class="filter-box">
+    <form method="get" class="filter-form">
+        <input
+            type="text"
+            name="q"
+            value="{{ q }}"
+            placeholder="Поиск внутри категории..."
+            class="input"
+        >
+        <button type="submit" class="button">Найти</button>
+        <a href="{{ category.get_absolute_url }}" class="button button-muted">Сбросить</a>
+    </form>
+</section>
+
+<section class="grid cards-grid">
+    {% for person in persons %}
+        {% include 'catalog/includes/card.html' with person=person %}
+    {% empty %}
+        <div class="empty-box">
+            <h2>В этой категории пока нет записей</h2>
+        </div>
+    {% endfor %}
+</section>
+
+{% if page_obj.paginator.num_pages > 1 %}
+    <nav class="pagination">
+        {% if page_obj.has_previous %}
+            <a class="button" href="?page={{ page_obj.previous_page_number }}{{ pagination_query }}">← Назад</a>
+        {% endif %}
+        <span class="page-counter">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a class="button" href="?page={{ page_obj.next_page_number }}{{ pagination_query }}">Вперёд →</a>
+        {% endif %}
+    </nav>
+{% endif %}
+{% endblock %}

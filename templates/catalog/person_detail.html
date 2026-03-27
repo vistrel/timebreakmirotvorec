@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="content-box person-page">
+    <div class="breadcrumbs">
+        <a href="{% url 'home' %}">Главная</a>
+        <span>/</span>
+        <a href="{{ person.category.get_absolute_url }}">{{ person.category.title }}</a>
+        <span>/</span>
+        <span>{{ person.name }}</span>
+    </div>
+
+    <div class="person-layout">
+        <div class="person-cover">
+            {% if person.image %}
+                <img src="{{ person.image.url }}" alt="{{ person.name }}">
+            {% else %}
+                <img src="{% static 'img/placeholder.svg' %}" alt="{{ person.name }}">
+            {% endif %}
+        </div>
+
+        <div class="person-meta">
+            <h1>{{ person.name }}</h1>
+            <div class="meta-list">
+                <span class="chip chip-active">{{ person.category.title }}</span>
+                {% if person.status_label %}
+                    <span class="chip">{{ person.status_label }}</span>
+                {% endif %}
+            </div>
+
+            {% if person.short_caption %}
+                <p class="lead">{{ person.short_caption }}</p>
+            {% endif %}
+
+            <div class="meta-stack">
+                <div><strong>Создано:</strong> {{ person.created_at|date:"d.m.Y H:i" }}</div>
+                <div><strong>Обновлено:</strong> {{ person.updated_at|date:"d.m.Y H:i" }}</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if person.description %}
+    <section class="content-box">
+        <h2>Описание</h2>
+        <div>{{ person.description|linebreaks }}</div>
+    </section>
+{% endif %}
+
+{% if person.reasoning %}
+    <section class="content-box">
+        <h2>Почему мы так считаем</h2>
+        <div>{{ person.reasoning|linebreaks }}</div>
+    </section>
+{% endif %}
+
+{% if person.extra_information %}
+    <section class="content-box">
+        <h2>Дополнительная информация</h2>
+        <div>{{ person.extra_information|linebreaks }}</div>
+    </section>
+{% endif %}
+
+{% if person.sources_notes %}
+    <section class="content-box">
+        <h2>Источники / примечания</h2>
+        <div>{{ person.sources_notes|linebreaks }}</div>
+    </section>
+{% endif %}
+
+{% if person.editorial_note %}
+    <section class="content-box warning-box">
+        <h2>Редакционное примечание</h2>
+        <div>{{ person.editorial_note|linebreaks }}</div>
+    </section>
+{% endif %}
+{% endblock %}

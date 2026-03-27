@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if page_title %}{{ page_title }} — {% endif %}{% if site_settings.default_seo_title %}{{ site_settings.default_seo_title }}{% else %}{{ site_settings.site_name }}{% endif %}</title>
+    <meta name="description" content="{% if page_description %}{{ page_description }}{% elif site_settings.default_seo_description %}{{ site_settings.default_seo_description }}{% else %}Каталог персоналий{% endif %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<div class="page-shell">
+    <header class="site-header">
+        <div class="container">
+            <div class="header-row">
+                <a class="brand" href="{% url 'home' %}">
+                    <span class="brand-title">{{ site_settings.site_name }}</span>
+                    {% if site_settings.site_tagline %}
+                        <span class="brand-tagline">{{ site_settings.site_tagline }}</span>
+                    {% endif %}
+                </a>
+
+                <nav class="main-nav">
+                    <a href="{% url 'home' %}">Главная</a>
+                    {% for nav_page in nav_pages %}
+                        <a href="{{ nav_page.get_absolute_url }}">{{ nav_page.title }}</a>
+                    {% endfor %}
+                    <a href="/admin/">Админка</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="site-main">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            {% if site_settings.footer_text %}
+                <div class="footer-box">{{ site_settings.footer_text|linebreaksbr }}</div>
+            {% endif %}
+
+            <div class="footer-links">
+                {% for footer_page in footer_pages %}
+                    <a href="{{ footer_page.get_absolute_url }}">{{ footer_page.title }}</a>
+                {% endfor %}
+            </div>
+
+            <div class="footer-meta">
+                {% if site_settings.contacts_email %}
+                    <span>Email: {{ site_settings.contacts_email }}</span>
+                {% endif %}
+                {% if site_settings.contacts_telegram %}
+                    <span>Telegram: {{ site_settings.contacts_telegram }}</span>
+                {% endif %}
+                {% if site_settings.copyright_text %}
+                    <span>{{ site_settings.copyright_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </footer>
+</div>
+</body>
+</html>

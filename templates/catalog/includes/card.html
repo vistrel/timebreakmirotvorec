@@ -1,0 +1,33 @@
+{% load static %}
+<article class="card">
+    <a href="{{ person.get_absolute_url }}" class="card-link">
+        <div class="card-image-wrap">
+            {% if person.image %}
+            <img class="card-image" src="{{ person.image.url }}" alt="{{ person.name }}">
+            {% else %}
+            <img class="card-image" src="{% static 'img/placeholder.svg' %}" alt="{{ person.name }}">
+            {% endif %}
+        </div>
+
+        <div class="card-body">
+            <div class="card-top">
+                {% if person.status_label %}
+                <span class="badge badge-muted">{{ person.status_label }}</span>
+                {% endif %}
+            </div>
+
+            <h3 class="card-title">{{ person.name }}</h3>
+
+            {% if person.short_caption %}
+            <p class="card-text">{{ person.short_caption }}</p>
+            {% endif %}
+
+            <div class="card-status-wrap">
+                <span
+                    class="badge {% if person.category.title == 'За войну' %}badge-war{% elif person.category.title == 'Против войны' %}badge-peace{% elif person.category.title == 'Молчун' %}badge-silent{% endif %}">
+                    {{ person.category.title }}
+                </span>
+            </div>
+        </div>
+    </a>
+</article>

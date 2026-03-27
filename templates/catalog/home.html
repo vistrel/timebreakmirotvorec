@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero-box">
+    <div class="hero-text">
+        <h1>Каталог записей</h1>
+        {% if site_blocks.home_intro %}
+            <div class="hero-description">{{ site_blocks.home_intro.content|linebreaks }}</div>
+        {% else %}
+            <p class="hero-description">Это главная страница каталога. Текст над списком можно менять через админку.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="filter-box">
+    <form method="get" class="filter-form">
+        <input
+            type="text"
+            name="q"
+            value="{{ q }}"
+            placeholder="Поиск по имени, описанию, категории..."
+            class="input"
+        >
+        <select name="category" class="input">
+            <option value="">Все категории</option>
+            {% for category in categories %}
+                <option value="{{ category.slug }}" {% if selected_category == category.slug %}selected{% endif %}>
+                    {{ category.title }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="button">Найти</button>
+        <a href="{% url 'home' %}" class="button button-muted">Сбросить</a>
+    </form>
+</section>
+
+<section class="chips-box">
+    <a href="{% url 'home' %}" class="chip {% if not selected_category %}chip-active{% endif %}">Все</a>
+    {% for category in categories %}
+        <a href="{% url 'home' %}?category={{ category.slug }}" class="chip {% if selected_category == category.slug %}chip-active{% endif %}">
+            {{ category.title }}
+        </a>
+    {% endfor %}
+</section>
+
+<section class="grid cards-grid">
+    {% for person in persons %}
+        {% include 'catalog/includes/card.html' with person=person %}
+    {% empty %}
+        <div class="empty-box">
+            <h2>Ничего не найдено</h2>
+            <p>Попробуйте изменить запрос или фильтр.</p>
+        </div>
+    {% endfor %}
+</section>
+
+{% if page_obj.paginator.num_pages > 1 %}
+    <nav class="pagination">
+        {% if page_obj.has_previous %}
+            <a class="button" href="?page={{ page_obj.previous_page_number }}{{ pagination_query }}">← Назад</a>
+        {% endif %}
+        <span class="page-counter">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a class="button" href="?page={{ page_obj.next_page_number }}{{ pagination_query }}">Вперёд →</a>
+        {% endif %}
+    </nav>
+{% endif %}
+
+{% if site_blocks.home_bottom_text %}
+    <section class="content-box">
+        <h2>Дополнительно</h2>
+        <div>{{ site_blocks.home_bottom_text.content|linebreaks }}</div>
+    </section>
+{% endif %}
+{% endblock %}
